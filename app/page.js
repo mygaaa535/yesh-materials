@@ -1,65 +1,260 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { SUBJECTS, MATERIAL_TYPES } from "@/types";
+import Sidebar from "@/components/Sidebar";
+import MaterialCard from "@/components/MaterialCard";
+import PdfViewer from "@/components/PdfViewer";
 
 export default function Home() {
+  const [materials, setMaterials] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [subject, setSubject] = useState("all");
+  const [type, setType] = useState("all");
+  const [search, setSearch] = useState("");
+  const [saved, setSaved] = useState([]);
+  const [viewing, setViewing] = useState(null); // PDF viewer
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("materials")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setMaterials(data || []);
+      } catch (e) {
+        console.error(e);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const s = JSON.parse(localStorage.getItem("eesh_saved") || "[]");
+    setSaved(s);
+  }, []);
+
+  const toggleSave = (id) => {
+    const next = saved.includes(id)
+      ? saved.filter((x) => x !== id)
+      : [...saved, id];
+    setSaved(next);
+    localStorage.setItem("eesh_saved", JSON.stringify(next));
+  };
+
+  const filtered = materials.filter((m) => {
+    if (subject === "saved" && !saved.includes(m.id)) return false;
+    if (subject !== "all" && subject !== "saved" && m.subject !== subject)
+      return false;
+    if (type !== "all" && m.type !== type) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      if (!m.title.toLowerCase().includes(q) && !String(m.year).includes(q))
+        return false;
+    }
+    return true;
+  });
+
+  const counts = { all: materials.length, saved: saved.length };
+  Object.keys(SUBJECTS).forEach((s) => {
+    counts[s] = materials.filter((m) => m.subject === s).length;
+  });
+
+  const subjectName =
+    subject === "all"
+      ? "Бүх материал"
+      : subject === "saved"
+        ? "Хадгалсан"
+        : SUBJECTS[subject]?.name || "";
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div
+      style={{
+        fontFamily: "Inter, sans-serif",
+        background: "#f4f5f7",
+        minHeight: "100vh",
+      }}
+    >
+      {viewing && (
+        <PdfViewer
+          url={viewing.file_url}
+          title={viewing.title}
+          onClose={() => setViewing(null)}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      )}
+
+      <div
+        style={{
+          background: "#0f1f3d",
+          height: 54,
+          display: "flex",
+          alignItems: "center",
+          padding: "0 20px",
+          gap: 16,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            width: 220,
+            flexShrink: 0,
+          }}
+        >
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              background: "linear-gradient(135deg,#c84b31,#e8603c)",
+              borderRadius: 8,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 11,
+              fontWeight: 700,
+              color: "#fff",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
+            ЕШ
+          </div>
+          <div>
+            <div style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>
+              ЕШ Бэлтгэл
+            </div>
+            <div style={{ color: "#5a6a8a", fontSize: 10 }}>
+              12-р ангийн материалууд
+            </div>
+          </div>
+        </div>
+
+        <div style={{ flex: 1, maxWidth: 500 }}>
+          <input
+            style={{
+              width: "100%",
+              background: "rgba(255,255,255,0.07)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 8,
+              padding: "8px 14px",
+              color: "#fff",
+              fontSize: 13,
+              outline: "none",
+              fontFamily: "Inter, sans-serif",
+            }}
+            placeholder="Хайх... (жишээ: математик 2023)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        <div
+          style={{
+            marginLeft: "auto",
+            fontSize: 11,
+            color: "#8a9ab8",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 6,
+            padding: "4px 10px",
+          }}
+        >
+          Эх сурвалж:{" "}
           <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href="http://ebook.eec.mn"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
+            style={{ color: "#c8d8f0" }}
           >
-            Documentation
+            ebook.eec.mn
           </a>
         </div>
-      </main>
+      </div>
+
+      {/* LAYOUT */}
+      <div style={{ display: "flex", paddingTop: 54 }}>
+        <Sidebar current={subject} onSelect={setSubject} counts={counts} />
+
+        <div style={{ marginLeft: 220, flex: 1, padding: 24 }}>
+          <div style={{ marginBottom: 20 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 600, color: "#1a1a2a" }}>
+              {subjectName}
+            </h1>
+            <p style={{ fontSize: 13, color: "#6b7280", marginTop: 4 }}>
+              Нийт {filtered.length} материал
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              marginBottom: 20,
+              flexWrap: "wrap",
+            }}
+          >
+            {["all", ...MATERIAL_TYPES].map((t) => (
+              <button
+                key={t}
+                onClick={() => setType(t)}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: 20,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  fontFamily: "Inter, sans-serif",
+                  border: "1px solid",
+                  transition: "all 0.15s",
+                  background: type === t ? "#0f1f3d" : "#fff",
+                  color: type === t ? "#fff" : "#6b7280",
+                  borderColor: type === t ? "#0f1f3d" : "#e8eaed",
+                }}
+              >
+                {t === "all" ? "Бүгд" : t}
+              </button>
+            ))}
+          </div>
+
+          {loading ? (
+            <div style={{ textAlign: "center", padding: 60, color: "#6b7280" }}>
+              Ачааллаж байна...
+            </div>
+          ) : filtered.length === 0 ? (
+            <div style={{ textAlign: "center", padding: 60, color: "#6b7280" }}>
+              <h3 style={{ fontSize: 16, color: "#1a1a2a", marginBottom: 6 }}>
+                Материал олдсонгүй
+              </h3>
+              <p>Өөр түлхүүр үгээр хайж үзнэ үү</p>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: 14,
+              }}
+            >
+              {filtered.map((m) => (
+                <MaterialCard
+                  key={m.id}
+                  material={m}
+                  saved={saved.includes(m.id)}
+                  onToggleSave={toggleSave}
+                  onView={setViewing}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
