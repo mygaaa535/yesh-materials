@@ -13,7 +13,7 @@ export default function Home() {
   const [type, setType] = useState("all");
   const [search, setSearch] = useState("");
   const [saved, setSaved] = useState([]);
-  const [viewing, setViewing] = useState(null); // PDF viewer
+  const [viewing, setViewing] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,14 +125,11 @@ export default function Home() {
               color: "#fff",
             }}
           >
-            ЕШ
+            M
           </div>
           <div>
             <div style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>
-              ЕШ Бэлтгэл
-            </div>
-            <div style={{ color: "#5a6a8a", fontSize: 10 }}>
-              12-р ангийн материалууд
+              ЭЕШ материалууд
             </div>
           </div>
         </div>
@@ -178,7 +175,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* LAYOUT */}
       <div style={{ display: "flex", paddingTop: 54 }}>
         <Sidebar current={subject} onSelect={setSubject} counts={counts} />
 

@@ -59,7 +59,6 @@ export default function PdfViewer({ url, title, onClose }) {
         </button>
       </div>
 
-      {/* PDF iframe */}
       <iframe
         src={url}
         style={{ flex: 1, border: "none", background: "#525659" }}

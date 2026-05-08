@@ -17,6 +17,7 @@ export default function MaterialCard({
 
   return (
     <div
+      className="min-h-[206px]"
       style={{
         background: "#fff",
         border: "1px solid #e8eaed",
@@ -48,72 +49,81 @@ export default function MaterialCard({
       >
         {saved ? "Хадгалсан" : "Хадгалах"}
       </button>
-
-      <div
-        style={{
-          width: 44,
-          height: 52,
-          background: "#fff5f4",
-          border: "1px solid #fdd",
-          borderRadius: 8,
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          paddingBottom: 6,
-          marginBottom: 12,
-        }}
-      >
-        <span
+      <div className="mb-2.5">
+        <div
           style={{
-            background: "#c84b31",
-            color: "#fff",
-            fontSize: 8,
-            fontWeight: 700,
-            padding: "2px 5px",
-            borderRadius: 3,
+            width: 44,
+            height: 52,
+            background: "#fff5f4",
+            border: "1px solid #fdd",
+            borderRadius: 8,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            paddingBottom: 6,
+            marginBottom: 12,
           }}
         >
-          PDF
-        </span>
-      </div>
+          <span
+            style={{
+              background: "#c84b31",
+              color: "#fff",
+              fontSize: 8,
+              fontWeight: 700,
+              padding: "2px 5px",
+              borderRadius: 3,
+            }}
+          >
+            PDF
+          </span>
+        </div>
 
-      <div
-        style={{
-          fontSize: 13,
-          fontWeight: 600,
-          color: "#1a1a2a",
-          marginBottom: 8,
-          paddingRight: 20,
-          lineHeight: 1.4,
-        }}
-      >
-        {material.title}
-      </div>
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 600,
+            color: "#1a1a2a",
+            marginBottom: 8,
+            paddingRight: 20,
+            lineHeight: 1.4,
+          }}
+        >
+          {material.title}
+        </div>
 
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            marginBottom: 14,
+          }}
+        >
+          <span style={{ fontSize: 11, color: "#6b7280" }}>
+            {material.year} он
+          </span>
+          <span
+            style={{
+              fontSize: 10,
+              padding: "2px 8px",
+              borderRadius: 10,
+              fontWeight: 500,
+              ...tag,
+            }}
+          >
+            {material.type}
+          </span>
+        </div>
+      </div>
       <div
         style={{
           display: "flex",
-          alignItems: "center",
-          gap: 6,
-          marginBottom: 14,
+          gap: 7,
+          width: "90%",
+          position: "absolute",
+          bottom: 12,
         }}
       >
-        <span style={{ fontSize: 11, color: "#6b7280" }}>
-          {material.year} он
-        </span>
-        <span
-          style={{
-            fontSize: 10,
-            padding: "2px 8px",
-            borderRadius: 10,
-            fontWeight: 500,
-            ...tag,
-          }}
-        >
-          {material.type}
-        </span>
-      </div>
-      <div style={{ display: "flex", gap: 7 }}>
         <button
           onClick={() => onView(material)}
           style={{

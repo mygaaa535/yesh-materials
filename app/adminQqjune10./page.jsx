@@ -25,7 +25,6 @@ export default function AdminPage() {
     setProgress(30);
 
     try {
-      // 1. Storage-д upload
       const fileName = `${form.subject}_${form.year}_${Date.now()}.pdf`;
 
       const { error: uploadError } = await supabase.storage
@@ -35,7 +34,6 @@ export default function AdminPage() {
       if (uploadError) throw uploadError;
       setProgress(70);
 
-      // 2. Public URL авах
       const { data } = supabase.storage
         .from("materials")
         .getPublicUrl(fileName);
@@ -43,7 +41,6 @@ export default function AdminPage() {
       const fileUrl = data.publicUrl;
       setProgress(90);
 
-      // 3. Database-д хадгалах
       const { error: dbError } = await supabase.from("materials").insert({
         subject: form.subject,
         title: form.title,
