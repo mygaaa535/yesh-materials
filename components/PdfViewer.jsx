@@ -27,21 +27,6 @@ export default function PdfViewer({ url, title, onClose }) {
           {title}
         </span>
 
-        <a
-          href={url}
-          download
-          style={{
-            padding: "6px 16px",
-            borderRadius: 7,
-            background: "rgba(255,255,255,0.1)",
-            color: "#fff",
-            fontSize: 12,
-            textDecoration: "none",
-            border: "1px solid rgba(255,255,255,0.2)",
-          }}
-        >
-          Татах
-        </a>
         <button
           onClick={onClose}
           style={{
