@@ -1,10 +1,10 @@
 "use client";
 
 const TAG_STYLE = {
-  Тест: { background: "#eff6ff", color: "#1d4ed8" },
-  Лекц: { background: "#f0fdf4", color: "#15803d" },
-  Дасгал: { background: "#fff7ed", color: "#c2410c" },
-  Жишиг: { background: "#fdf4ff", color: "#7e22ce" },
+  Тест: "bg-blue-50 text-blue-700",
+  Лекц: "bg-green-50 text-green-700",
+  Дасгал: "bg-orange-50 text-orange-700",
+  Жишиг: "bg-purple-50 text-purple-700",
 };
 
 export default function MaterialCard({
@@ -13,150 +13,58 @@ export default function MaterialCard({
   onToggleSave,
   onView,
 }) {
-  const tag = TAG_STYLE[material.type] || TAG_STYLE["Тест"];
+  const tagClass = TAG_STYLE[material.type] || TAG_STYLE["Тест"];
 
   return (
     <div
-      className="min-h-[206px]"
-      style={{
-        background: "#fff",
-        border: "1px solid #e8eaed",
-        borderRadius: 12,
-        padding: 16,
-        position: "relative",
-        transition: "all 0.15s",
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.08)")
-      }
-      onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
+      className="bg-white border border-[#e8eaed] rounded-xl p-4 relative transition-all hover:shadow-lg hover:shadow-black/5 flex flex-col min-h-[220px]"
     >
       <button
         onClick={() => onToggleSave(material.id)}
-        style={{
-          position: "absolute",
-          top: 12,
-          right: 12,
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          fontSize: 11,
-          color: saved ? "#c84b31" : "#ccc",
-          transition: "color 0.15s",
-          fontFamily: "Inter, sans-serif",
-          fontWeight: 600,
-        }}
+        className={`absolute top-3 right-3 text-[10px] font-semibold transition-colors cursor-pointer ${
+          saved ? "text-[#c84b31]" : "text-gray-300 hover:text-gray-400"
+        }`}
       >
         {saved ? "Хадгалсан" : "Хадгалах"}
       </button>
-      <div className="mb-2.5">
-        <div
-          style={{
-            width: 44,
-            height: 52,
-            background: "#fff5f4",
-            border: "1px solid #fdd",
-            borderRadius: 8,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            paddingBottom: 6,
-            marginBottom: 12,
-          }}
-        >
-          <span
-            style={{
-              background: "#c84b31",
-              color: "#fff",
-              fontSize: 8,
-              fontWeight: 700,
-              padding: "2px 5px",
-              borderRadius: 3,
-            }}
-          >
+
+      <div className="flex-1">
+        <div className="w-10 h-12 bg-[#fff5f4] border border-[#fdd] rounded-lg flex items-end justify-center pb-1.5 mb-3">
+          <span className="bg-[#c84b31] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-[3px]">
             PDF
           </span>
         </div>
 
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            color: "#1a1a2a",
-            marginBottom: 8,
-            paddingRight: 20,
-            lineHeight: 1.4,
-          }}
-        >
+        <div className="text-[13px] font-semibold text-[#1a1a2a] mb-2 pr-6 line-clamp-2 leading-tight">
           {material.title}
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: 14,
-          }}
-        >
-          <span style={{ fontSize: 11, color: "#6b7280" }}>
+        <div className="flex items-center gap-1.5 mb-4">
+          <span className="text-[11px] text-[#6b7280]">
             {material.year} он
           </span>
-          <span
-            style={{
-              fontSize: 10,
-              padding: "2px 8px",
-              borderRadius: 10,
-              fontWeight: 500,
-              ...tag,
-            }}
-          >
+          <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${tagClass}`}>
             {material.type}
           </span>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          gap: 7,
-          width: "90%",
-          position: "absolute",
-          bottom: 12,
-        }}
-      >
+
+      <div className="flex gap-1.5 mt-auto pt-2">
         <button
           onClick={() => onView(material)}
-          style={{
-            flex: 1,
-            padding: "7px 0",
-            borderRadius: 7,
-            fontSize: 12,
-            fontWeight: 500,
-            border: "none",
-            background: "#0f1f3d",
-            color: "#fff",
-            cursor: "pointer",
-            fontFamily: "Inter, sans-serif",
-          }}
+          className="flex-1 py-1.5 rounded-lg text-xs font-medium bg-[#0f1f3d] text-white cursor-pointer hover:bg-[#1a2a4a] transition-colors"
         >
           Үзэх
         </button>
         <a
           href={material.file_url}
-          download={material.title + ".pdf"}
-          style={{
-            padding: "7px 12px",
-            borderRadius: 7,
-            fontSize: 12,
-            border: "1px solid #e8eaed",
-            background: "#f4f5f7",
-            color: "#6b7280",
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-          }}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-3 py-1.5 rounded-lg text-xs border border-[#e8eaed] bg-[#f4f5f7] text-[#6b7280] hover:bg-[#e8eaed] transition-colors flex items-center"
         >
-          Татах
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
         </a>
       </div>
     </div>

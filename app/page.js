@@ -72,13 +72,7 @@ export default function Home() {
         : SUBJECTS[subject]?.name || "";
 
   return (
-    <div
-      style={{
-        fontFamily: "Inter, sans-serif",
-        background: "#f4f5f7",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="min-h-screen bg-[#f4f5f7] font-sans antialiased">
       {viewing && (
         <PdfViewer
           url={viewing.file_url}
@@ -87,132 +81,63 @@ export default function Home() {
         />
       )}
 
-      <div
-        style={{
-          background: "#0f1f3d",
-          height: 54,
-          display: "flex",
-          alignItems: "center",
-          padding: "0 20px",
-          gap: 16,
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            width: 220,
-            flexShrink: 0,
-          }}
-        >
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              background: "linear-gradient(135deg,#c84b31,#e8603c)",
-              borderRadius: 8,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 11,
-              fontWeight: 700,
-              color: "#fff",
-            }}
-          >
+      <div className="fixed top-0 left-0 right-0 z-34 flex h-[54px] items-center gap-4 bg-[#0f1f3d] px-4 md:px-5">
+        <div className="flex w-auto shrink-0 items-center gap-2.5 md:w-[220px]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-[#c84b31] to-[#e8603c] text-[11px] font-bold text-white">
             M
           </div>
-          <div>
-            <div style={{ color: "#fff", fontSize: 14, fontWeight: 600 }}>
+          <div className="hidden sm:block">
+            <div className="text-sm font-semibold text-white">
               ЭЕШ материалууд
             </div>
           </div>
         </div>
 
-        <div style={{ flex: 1, maxWidth: 500 }}>
+        <div className="flex-1 max-w-lg">
           <input
-            style={{
-              width: "100%",
-              background: "rgba(255,255,255,0.07)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: 8,
-              padding: "8px 14px",
-              color: "#fff",
-              fontSize: 13,
-              outline: "none",
-              fontFamily: "Inter, sans-serif",
-            }}
+            className="w-full rounded-lg border border-white/10 bg-white/7 px-3.5 py-2 text-sm text-white outline-none placeholder:text-gray-400 focus:border-white/20 transition-all"
             placeholder="Хайх... (жишээ: математик 2023)"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        <div
-          style={{
-            marginLeft: "auto",
-            fontSize: 11,
-            color: "#8a9ab8",
-            border: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: 6,
-            padding: "4px 10px",
-          }}
-        >
-          Эх сурвалж:{" "}
+        <div className="hidden md:flex items-center ml-auto text-[11px] text-[#8a9ab8] border border-white/10 rounded-md px-2.5 py-1">
+          Эх сурвалж:&nbsp;
           <a
             href="http://ebook.eec.mn"
             target="_blank"
             rel="noreferrer"
-            style={{ color: "#c8d8f0" }}
+            className="text-[#c8d8f0] hover:text-white transition-colors"
           >
             ebook.eec.mn
           </a>
         </div>
       </div>
 
-      <div style={{ display: "flex", paddingTop: 54 }}>
+      <div className="flex flex-col md:flex-row pt-[54px]">
         <Sidebar current={subject} onSelect={setSubject} counts={counts} />
 
-        <div style={{ marginLeft: 220, flex: 1, padding: 24 }}>
-          <div style={{ marginBottom: 20 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 600, color: "#1a1a2a" }}>
+        <div className="flex-1 p-4 md:p-6 md:ml-[220px]">
+          <div className="mb-5">
+            <h1 className="text-xl md:text-2xl font-semibold text-[#1a1a2a]">
               {subjectName}
             </h1>
-            <p style={{ fontSize: 13, color: "#6b7280", marginTop: 4 }}>
+            <p className="text-xs md:text-sm text-[#6b7280] mt-1">
               Нийт {filtered.length} материал
             </p>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              marginBottom: 20,
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="flex flex-wrap gap-2 mb-5">
             {["all", ...MATERIAL_TYPES].map((t) => (
               <button
                 key={t}
                 onClick={() => setType(t)}
-                style={{
-                  padding: "6px 14px",
-                  borderRadius: 20,
-                  fontSize: 12,
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  fontFamily: "Inter, sans-serif",
-                  border: "1px solid",
-                  transition: "all 0.15s",
-                  background: type === t ? "#0f1f3d" : "#fff",
-                  color: type === t ? "#fff" : "#6b7280",
-                  borderColor: type === t ? "#0f1f3d" : "#e8eaed",
-                }}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all border ${
+                  type === t
+                    ? "bg-[#0f1f3d] text-white border-[#0f1f3d]"
+                    : "bg-white text-[#6b7280] border-[#e8eaed] hover:border-[#ccd0d5]"
+                }`}
               >
                 {t === "all" ? "Бүгд" : t}
               </button>
@@ -220,24 +145,18 @@ export default function Home() {
           </div>
 
           {loading ? (
-            <div style={{ textAlign: "center", padding: 60, color: "#6b7280" }}>
+            <div className="text-center py-20 text-[#6b7280]">
               Ачааллаж байна...
             </div>
           ) : filtered.length === 0 ? (
-            <div style={{ textAlign: "center", padding: 60, color: "#6b7280" }}>
-              <h3 style={{ fontSize: 16, color: "#1a1a2a", marginBottom: 6 }}>
+            <div className="text-center py-20 text-[#6b7280]">
+              <h3 className="text-base font-medium text-[#1a1a2a] mb-1.5">
                 Материал олдсонгүй
               </h3>
-              <p>Өөр түлхүүр үгээр хайж үзнэ үү</p>
+              <p className="text-sm">Өөр түлхүүр үгээр хайж үзнэ үү</p>
             </div>
           ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                gap: 14,
-              }}
-            >
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
               {filtered.map((m) => (
                 <MaterialCard
                   key={m.id}
